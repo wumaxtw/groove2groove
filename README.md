@@ -2,7 +2,7 @@
 
 This is the source code for Groove2Groove.
 
-We are working on releasing the source code.
+For now, this repository contains only the model configuration file [`model.yaml`](model.yaml) with the hyperparameter settings. We are working on releasing the Python source code.
 
 ## Acknowledgment
 This work has received funding from the European Union’s Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No. 765068.
