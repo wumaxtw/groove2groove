@@ -2,13 +2,15 @@ random_seed: 42
 
 input_encoding:
   class: !!python/name:museflow.encodings.PianoRollEncoding
-  binarize: True
+  normalize: True
   sampling_frequency: 4  # 4 samples per beat  (tempo is forced to 60 BPM)
 output_encoding:
-  class: !!python/name:ocifka_phd.encodings.beat_relative_encoding.BeatRelativeEncoding
-  use_velocity: False
+  class: !!python/name:groove2groove.beat_relative_encoding.BeatRelativeEncoding
+  use_velocity: True
+  velocity_unit: 16
   units_per_beat: 12
   use_all_off_event: True
+  use_drum_events: True
 
 model:
   encoder_cnn:
@@ -69,13 +71,13 @@ model:
   decoder:
     cell:
       num_units: 1024
-    max_length: 600
+    max_length: 5000
 
   training:
     lr_decay:
       class: !!python/name:tensorflow.train.exponential_decay
       learning_rate: 1.0e-3
-      decay_steps: 50000
+      decay_steps: 3000
       decay_rate: 0.5
     max_gradient_norm: 0.001
 
@@ -84,11 +86,13 @@ trainer:
   validation_period: 800
 
 train_data:
-  db_path: /tsi/doctorants/ocifka/data/biab_midi/irbgen_2x1k5styles_v2/train/final/shuf/all_except_drums.db
-  metadata_path: /tsi/doctorants/ocifka/data/biab_midi/irbgen_2x1k5styles_v2/train/final/shuf/meta.json.gz
+  source_db_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/train/final/shuf/all_except_drums.db
+  target_db_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/train/final/shuf/all.db
+  metadata_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/train/final/shuf/meta.json.gz
 val_data:
-  db_path: /tsi/doctorants/ocifka/data/biab_midi/irbgen_2x1k5styles_v2/val/final/all_except_drums.db
-  metadata_path: /tsi/doctorants/ocifka/data/biab_midi/irbgen_2x1k5styles_v2/val/final/meta.json.gz
+  source_db_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/val/final/all_except_drums.db
+  target_db_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/val/final/all.db
+  metadata_path: /mnt/beegfs/home/cifka/d/data/biab_midi/irbgen_2x1k5styles_v3/val/final/meta.json.gz
 
 style_note_filters:
   Bass:
@@ -99,9 +103,12 @@ style_note_filters:
     instrument_re: "^BB Guitar$"
   Strings:
     instrument_re: "^BB Strings$"
+  Drums:
+    instrument_re: "^BB Drums$"
 
 data_prep:
   num_epochs: 1
+  num_train_examples: 1559098  # 1/2 epoch
   train_batch_size: 64
   val_batch_size: 128
   shuffle_buffer_size: 2000
