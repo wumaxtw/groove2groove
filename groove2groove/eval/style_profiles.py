@@ -88,8 +88,8 @@ def extract_note_stats(data, *, _cfg):
                 for key, (feat_type, kwargs) in NOTE_FEATURE_DEFS.items()}
     feature_values = note_features.extract_features(data, features)
 
-    @configurable(['features'])
-    def make_hist(_cfg, name, normed=True):
+    @configurable
+    def make_hist(name, normed=True, *, _cfg):
         feature_names = [f['name'] for f in _cfg.get('features')]
         with np.errstate(divide='ignore', invalid='ignore'):
             hist, _ = np.histogramdd(
